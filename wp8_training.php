@@ -124,31 +124,39 @@ class wp8_training {
 
         echo "<h1>List Post</h1>";
         echo "<br>";
-        global $wpdb;
-
-        $posts = $wpdb->get_results( 
-            "
-            SELECT *
-            FROM $wpdb->posts
-            WHERE post_type = 'post'
-            AND post_status NOT IN ('trash', 'auto-draft')
-            ORDER BY ID desc
-            "
+        // The Query
+        $the_query = new WP_Query( 
+            array(
+                'post_type' => 'post',
+                'orderby'   => 'id',
+                'order'     => 'DESC'
+            ) 
         );
         
         echo "<div class='md-post-list'><table>";
-        foreach ( $posts as $post ) 
-        {
-            echo "<tr>";
-            // echo json_encode($post);
-            echo '<td>'.$post->post_title.'</td>';
-            echo '<td>
-                    <button class="md-post-edit" id="'.$post->ID.'">Edit</button>
-                    <button class="md-post-delete" id="'.$post->ID.'">Delete</button>
-                </td>';
-            echo '</tr>';
+        // The Loop
+        if ( $the_query->have_posts() ) {
+
+            while ( $the_query->have_posts() ) {
+                $the_query->the_post();
+                
+                echo "<tr>";
+                echo '<td>'.get_the_title().'</td>';
+                echo '<td>
+                        <button class="md-post-edit" id="'. get_the_ID() .'">Edit</button>
+                        <button class="md-post-delete" id="'.get_the_ID().'">Delete</button>
+                    </td>';
+                echo '</tr>';
+            }
+            
+        } else {
+            echo 'no posts found';
         }
+        /* Restore original Post Data */
+        wp_reset_postdata();
         echo "</table></div>";
+        
+        
         echo '<div class="md-post-edit-form">';
         echo '<form><table class="form-table" role="presentation">
                 <tbody>
