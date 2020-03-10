@@ -37,7 +37,6 @@ class wp8_training {
         $limit = (int) $attributes['limit'];
         $posts = $this->_get_latest_post( $limit );
 
-        var_dump($posts);
         $posts = json_decode($posts);
         if($posts)
         {
@@ -122,9 +121,6 @@ class wp8_training {
 
     function API_post_form()
     {
-        if ( isset( $_POST['md-post-update'] ) ) {
-            $this->update_post($_POST);
-        }
 
         echo "<h1>List Post</h1>";
         echo "<br>";
@@ -188,40 +184,6 @@ class wp8_training {
         ?>
         <?php
 
-    }
-
-    function update_post($post)
-    {
-        var_dump($post);
-        $id = $post['md-post-id'];
-        $title = $post['md-post-title'];
-        $content = $post['md-post-content'];
-        
-        $url = get_rest_url() . "wp/v2/posts/$id";
-        $response = wp_remote_post( $url, array(
-            'method' => 'POST',
-            'timeout' => 45,
-            'redirection' => 5,
-            'httpversion' => '1.0',
-            'blocking' => true,
-            'headers' => array(),
-            'body' => array( 'title' => $title, 'content' => $content ),
-            'cookies' => array()
-            )
-        );
-
-        var_dump($response);
-        wp_die();
-        $args = array(
-            '_fields'   => 'author,id,title,excerpt,link',
-            'per_page'  => $limit,
-            'orderby'   => 'id',
-            'order'     => 'desc'
-        );
-        $url = get_rest_url() . "wp/v2/posts/?" . http_build_query( $args );
-
-        $response = wp_remote_get( $url ); 
-        return wp_remote_retrieve_body($response);
     }
 
     function wp_api() {
