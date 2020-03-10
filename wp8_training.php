@@ -85,6 +85,20 @@ class wp8_training {
     }
     function API_post_add()
     {
+        $wp_request_headers = array(
+            'Authorization' => 'Basic ' . base64_encode( 'admin:admin123' )
+        );
+          
+        $url = get_rest_url() . 'wp/v2/posts/60';
+        $wp_delete_post_response = wp_remote_request(
+            $url,
+            array(
+                'method'    => 'DELETE',
+                'headers'   => $wp_request_headers
+            )
+        );
+        echo wp_remote_retrieve_response_code( $wp_delete_post_response ) . ' ' . wp_remote_retrieve_response_message( $wp_delete_post_response );
+
         // echo admin_url('admin.php?page=API-post.php&tab=1');
         ?>
         <table class="form-table" role="presentation">
